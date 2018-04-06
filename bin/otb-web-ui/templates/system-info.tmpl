@@ -1,0 +1,37 @@
+{{ define "system-info" }}
+<div class="card">
+  <div class="card-body">
+    <dl class="row">
+      <dt class="col-sm-3">Kernel</dt>
+      <dd class="col-sm-9">{{ .Kernel }}</dd>
+
+      <dt class="col-sm-3">Hostname</dt>
+      <dd class="col-sm-9">{{ .Hostname }}</dd>
+
+      <dt class="col-sm-3">System</dt>
+      <dd class="col-sm-9">{{ .System }}</dd>
+
+      <dt class="col-sm-3">Model</dt>
+      <dd class="col-sm-9">{{ .Model }}</dd>
+
+      <dt class="col-sm-3">Board name</dt>
+      <dd class="col-sm-9">{{ .BoardName }}</dd>
+
+      <dt class="col-sm-3">Release</dt>
+      <dd class="col-sm-9">{{ .Release.Distribution }}</dd>
+
+      <dt class="col-sm-3">Version</dt>
+      <dd class="col-sm-9">{{ .Release.Version }}</dd>
+
+      <dt class="col-sm-3">Revision</dt>
+      <dd class="col-sm-9">{{ .Release.Revision }}</dd>
+
+      <dt class="col-sm-3">Target</dt>
+      <dd class="col-sm-9">{{ .Release.Target }}</dd>
+
+      <dt class="col-sm-3">Description</dt>
+      <dd class="col-sm-9">{{ .Release.Description }}</dd>
+    </dl>
+  </div>
+</div>
+{{ end }}
