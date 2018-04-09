@@ -25,6 +25,7 @@ func main() {
 				"templates/layout.tmpl",
 				"templates/error.tmpl",
 				"templates/system-info.tmpl",
+				"templates/network-info.tmpl",
 			}
 		},
 	})
@@ -40,5 +41,15 @@ func main() {
 		r.HTML(w, http.StatusOK, "system-info", info)
 	})
 
-	http.ListenAndServe("0.0.0.0:80", mux)
+	mux.HandleFunc("/network", func(w http.ResponseWriter, req *http.Request) {
+		info, err := ubus.NetworkDump()
+		if err != nil {
+			r.HTML(w, http.StatusOK, "error", err.Error())
+			return
+		}
+
+		r.HTML(w, http.StatusOK, "network-info", info)
+	})
+
+	http.ListenAndServe("0.0.0.0:8080", mux)
 }

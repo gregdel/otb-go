@@ -19,3 +19,4 @@ _build() {
 }
 
 _build otb-web-ui
+_build otb-bus

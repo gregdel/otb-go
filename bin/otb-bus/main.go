@@ -1,17 +1,28 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/gregdel/otb-go/lib/openwrt/ubus"
 	"github.com/kr/pretty"
 )
 
 func main() {
-	info, err := ubus.SystemBoard()
+	// info, err := ubus.SystemBoard()
+	// if err != nil {
+	// 	log.Fatalf("failed to get system info: %s", err)
+	// }
+	// pretty.Println(info)
+
+	// links, err := netlink.LinkList()
+	// if err != nil {
+	// 	log.Fatalf("failed to get link list: %s", err)
+	// }
+	// pretty.Println(links)
+
+	interfaces, err := ubus.NetworkDump()
 	if err != nil {
-		fmt.Println("failed to get system info: ", err)
-		return
+		log.Fatalf("failed to dump network: %s", err)
 	}
-	pretty.Println(info)
+	pretty.Println(interfaces)
 }
