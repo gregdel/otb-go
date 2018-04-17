@@ -6,6 +6,24 @@ import (
 	"sort"
 )
 
+// Hold the configuration types
+var configTypes = map[ConfigType]map[string]func() ConfigData{}
+
+// This function should be used in the init functions to register new types
+func registerConfigType(t ConfigType, st string, f func() ConfigData) {
+	_, ok := configTypes[t]
+	if !ok {
+		configTypes[t] = map[string]func() ConfigData{}
+	}
+
+	_, ok = configTypes[t][st]
+	if ok {
+		panic(fmt.Sprintf("config type already registered: %s/%s", t, st))
+	}
+
+	configTypes[t][st] = f
+}
+
 // ConfigType represents a configuration type
 type ConfigType string
 
@@ -39,27 +57,21 @@ func (cb *ConfigBlock) UnmarshalJSON(in []byte) error {
 	}
 
 	// Check the block config
-	if _, ok := unmarshalFuncs[cb.Type]; !ok {
+	if _, ok := configTypes[cb.Type]; !ok {
 		fmt.Printf("invalid config section: %q\n", cb.Type)
 		return nil
 	}
 
 	// Get the proper function to call
-	f, ok := unmarshalFuncs[cb.Type][cb.ConfigBlockHeader.Type]
+	f, ok := configTypes[cb.Type][cb.ConfigBlockHeader.Type]
 	if !ok {
 		// Fail softly for now
 		fmt.Printf("invalid block type: %q\n", cb.ConfigBlockHeader.Type)
 		return nil
 	}
+	cb.ConfigData = f()
 
-	// Get the data from the registered function
-	data, err := f(in)
-	if err != nil {
-		return err
-	}
-	cb.ConfigData = data
-
-	return nil
+	return json.Unmarshal(in, cb.ConfigData)
 }
 
 // ConfigBlockHeader represents the generic informations present in each uci
@@ -113,15 +125,4 @@ func NewConfiguration(t ConfigType) *Configuration {
 	return &Configuration{
 		Type: t,
 	}
-}
-
-var unmarshalFuncs = map[ConfigType]map[string]func([]byte) (ConfigData, error){
-	ConfigNetwork: {
-		"interface": unmarshalNetworkInterface,
-	},
-}
-
-func unmarshalNetworkInterface(input []byte) (ConfigData, error) {
-	ni := &NetworkInterface{}
-	return ni, json.Unmarshal(input, ni)
 }
