@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/gregdel/otb-go/lib/openwrt/ubus"
+	"github.com/gregdel/otb-go/lib/openwrt/uci"
 	"github.com/kr/pretty"
 )
 
@@ -20,9 +21,15 @@ func main() {
 	// }
 	// pretty.Println(links)
 
-	interfaces, err := ubus.NetworkDump()
+	// interfaces, err := ubus.NetworkDump()
+	// if err != nil {
+	// 	log.Fatalf("failed to dump network: %s", err)
+	// }
+	// pretty.Println(interfaces)
+
+	configuration, err := ubus.UciGetConfig(uci.ConfigNetwork)
 	if err != nil {
-		log.Fatalf("failed to dump network: %s", err)
+		log.Fatalf("failed to get network configuration: %s", err)
 	}
-	pretty.Println(interfaces)
+	pretty.Println(configuration)
 }
