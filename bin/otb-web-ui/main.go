@@ -1,55 +1,38 @@
 package main
 
 import (
+	"log"
 	"net/http"
-	"strings"
 
-	"github.com/gobuffalo/packr"
 	"github.com/gregdel/otb-go/lib/openwrt/ubus"
+	"github.com/gregdel/otb-go/lib/openwrt/uci"
+	"github.com/julienschmidt/httprouter"
 	"github.com/unrolled/render"
+	"github.com/urfave/negroni"
 )
 
-// Use packr to statically add the templates in the go binary
-//go:generate packr
+// TODO: remove
+var rend = render.New()
+
+// GetConfigHandler displays the configuration
+func GetConfigHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	configName := ps.ByName("config")
+
+	configuration, err := ubus.UciGetConfig(uci.ConfigType(configName))
+	if err != nil {
+		rend.JSON(w, http.StatusOK, map[string]string{"error": err.Error()})
+		return
+	}
+
+	rend.JSON(w, http.StatusOK, configuration)
+}
 
 func main() {
-	templateBox := packr.NewBox("./templates")
-	r := render.New(render.Options{
-		Layout: "layout",
-		Asset: func(name string) ([]byte, error) {
-			n := strings.Replace(name, "templates/", "", -1)
-			return templateBox.MustBytes(n)
-		},
-		AssetNames: func() []string {
-			return []string{
-				"templates/layout.tmpl",
-				"templates/error.tmpl",
-				"templates/system-info.tmpl",
-				"templates/network-info.tmpl",
-			}
-		},
-	})
-	mux := http.NewServeMux()
+	router := httprouter.New()
+	router.GET("/configs/:config", GetConfigHandler)
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		info, err := ubus.SystemBoard()
-		if err != nil {
-			r.HTML(w, http.StatusOK, "error", err.Error())
-			return
-		}
+	n := negroni.Classic()
+	n.UseHandler(router)
 
-		r.HTML(w, http.StatusOK, "system-info", info)
-	})
-
-	mux.HandleFunc("/network", func(w http.ResponseWriter, req *http.Request) {
-		info, err := ubus.NetworkDump()
-		if err != nil {
-			r.HTML(w, http.StatusOK, "error", err.Error())
-			return
-		}
-
-		r.HTML(w, http.StatusOK, "network-info", info)
-	})
-
-	http.ListenAndServe("0.0.0.0:8080", mux)
+	log.Fatal(http.ListenAndServe(":8080", n))
 }

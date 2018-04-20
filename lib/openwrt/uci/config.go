@@ -29,10 +29,11 @@ type ConfigType string
 
 // Possible configuration types
 const (
-	ConfigNetwork  ConfigType = "network"
-	ConfigFirewall            = "firewall"
-	ConfigDHCP                = "dhcp"
-	ConfigDSCP                = "dscp"
+	ConfigNetwork    ConfigType = "network"
+	ConfigFirewall              = "firewall"
+	ConfigDHCP                  = "dhcp"
+	ConfigDSCP                  = "dscp"
+	ConfigOverthebox            = "overthebox"
 )
 
 // ConfigData is in interface to implement to be a configuration block
@@ -48,9 +49,9 @@ type ConfigData interface {
 
 // ConfigBlock represents a configuration block
 type ConfigBlock struct {
-	Type ConfigType
-	ConfigBlockHeader
-	ConfigData
+	Type              ConfigType `json:"type"`
+	ConfigBlockHeader `json:"header"`
+	ConfigData        `json:"data"`
 }
 
 // UnmarshalJSON implements the marshaler interface
@@ -90,8 +91,8 @@ type ConfigBlockHeader struct {
 
 // Configuration represents a configuration
 type Configuration struct {
-	Type         ConfigType
-	ConfigBlocks []*ConfigBlock
+	Type         ConfigType     `json:"type"`
+	ConfigBlocks []*ConfigBlock `json:"values"`
 }
 
 // UnmarshalJSON implements the unmarshaler interface

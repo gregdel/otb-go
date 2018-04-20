@@ -26,7 +26,9 @@ type NetworkInterface struct {
 	Device         string `json:"device,omitempty"`
 	PeerDNS        string `json:"peerdns,omitempty"`
 	IP6Table       string `json:"ip6table,omitempty"`
+	IP6Assign      string `json:"ip6assign,omitempty"`
 	Service        string `json:"service,omitempty"`
+	GeneratedBy    string `json:"generatedby,omitempty"`
 }
 
 // ConfigType implements the ConfigData interface
