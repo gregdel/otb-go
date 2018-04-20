@@ -6,17 +6,17 @@ func init() {
 
 // NetworkRule represents a network rule
 type NetworkRule struct {
-	In       string `json:"in"`
-	Out      string `json:"out"`
-	Src      string `json:"src"`
-	Dest     string `json:"dest"`
-	ToS      string `json:"tos"`
-	Mark     string `json:"mark"`
-	Invert   string `json:"invert"`
-	Priority string `json:"priority"`
-	Lookup   string `json:"lookup"`
-	Goto     string `json:"goto"`
-	Action   string `json:"action"`
+	In       string `json:"in,omitempty"`
+	Out      string `json:"out,omitempty"`
+	Src      string `json:"src,omitempty"`
+	Dest     string `json:"dest,omitempty"`
+	ToS      string `json:"tos,omitempty"`
+	Mark     string `json:"mark,omitempty"`
+	Invert   string `json:"invert,omitempty"`
+	Priority string `json:"priority,omitempty"`
+	Lookup   string `json:"lookup,omitempty"`
+	Goto     string `json:"goto,omitempty"`
+	Action   string `json:"action,omitempty"`
 }
 
 // ConfigType implements the ConfigData interface
@@ -24,3 +24,6 @@ func (nr *NetworkRule) ConfigType() ConfigType { return ConfigNetwork }
 
 // ConfigSubType implements the ConfigData interface
 func (nr *NetworkRule) ConfigSubType() string { return "rule" }
+
+// ConfigName implements the ConfigData interface
+func (nr *NetworkRule) ConfigName() string { return "" }

@@ -37,8 +37,13 @@ const (
 
 // ConfigData is in interface to implement to be a configuration block
 type ConfigData interface {
+	// ConfigType returns the config file name (e.g network)
 	ConfigType() ConfigType
+	// ConfigSubType returns the config type inside the config name (e.g
+	// interface)
 	ConfigSubType() string
+	// ConfigName returns the block configuration name (e.g. if1)
+	ConfigName() string
 }
 
 // ConfigBlock represents a configuration block

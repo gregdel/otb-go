@@ -6,9 +6,9 @@ func init() {
 
 // NetworkSwitch represents a network switch
 type NetworkSwitch struct {
-	Name       string `json:"name"`
-	Reset      string `json:"reset"`
-	EnableVLAN string `json:"enable_vlan"`
+	Name       string `json:"name,omitempty"`
+	Reset      string `json:"reset,omitempty"`
+	EnableVLAN string `json:"enable_vlan,omitempty"`
 }
 
 // ConfigType implements the ConfigData interface
@@ -16,3 +16,6 @@ func (nr *NetworkSwitch) ConfigType() ConfigType { return ConfigNetwork }
 
 // ConfigSubType implements the ConfigData interface
 func (nr *NetworkSwitch) ConfigSubType() string { return "switch" }
+
+// ConfigName implements the ConfigData interface
+func (nr *NetworkSwitch) ConfigName() string { return "" }
